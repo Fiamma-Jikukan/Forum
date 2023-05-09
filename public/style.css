@@ -1,0 +1,12 @@
+body {
+    background-color: grey;
+    color: #ddd;
+    text-align: center;
+    font-family: sans-serif;
+  }
+  .title{
+    color: black;
+  }
+  .user{
+    display: grid;
+  }
