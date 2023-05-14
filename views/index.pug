@@ -13,9 +13,11 @@ html
                 h2 log in
                 if authenticated
                  h3 You are logged in! 
+                 form(action='/logout' method='post')
+                    input(type='submit' value='Log Out')
                 else 
                  h3 #{message}
-                form(action='/login' method='post')
+                 form(action='/login' method='post')
                     div
                         label Username: 
                         input(type='text' name='username')
@@ -24,8 +26,9 @@ html
                         input(type='password' name='password')
                     div
                     input(type='submit' value='Log In')
-                form(action='/logout' method='post')
-                    input(type='submit' value='Log Out')
+                
+                
+                 
 
 
 
