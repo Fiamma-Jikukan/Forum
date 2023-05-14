@@ -16,7 +16,6 @@ app.use("/public", express.static(__dirname + "/public"));
 // get requests
 app.get("/", (req, res) => {
     res.render('index', { title: 'Welcome To My Site', message: 'Please log in' });
-    //    res.sendFile(absolute);
 })
 // post requests
 app.post("/login", async (req, res) => {
