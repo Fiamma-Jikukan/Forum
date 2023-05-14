@@ -21,17 +21,24 @@ app.use((req, res, next) => {
     console.log(app.locals.session_id);
     const { cookies } = req
     try {
-        if (cookies.session_id == app.locals.session_id) {
-            siteControl.authenticated = true;
-            console.log(1);
-            console.log(cookies.session_id);
-            console.log(app.locals.session_id);
-        } else {
+        if (cookies.session_id === undefined) {
             siteControl.authenticated = false;
-            console.log(2);
-            console.log(cookies.session_id);
-            console.log(app.locals.session_id);
+            console.log("please login");
+            next()
+        } else {
+            if (cookies.session_id == app.locals.session_id) {
+                siteControl.authenticated = true;
+                console.log(1);
+                console.log(cookies.session_id);
+                console.log(app.locals.session_id);
+            } else {
+                siteControl.authenticated = false;
+                console.log(2);
+                console.log(cookies.session_id);
+                console.log(app.locals.session_id);
+            }
         }
+
     } catch {
         console.log("error");
         next();
