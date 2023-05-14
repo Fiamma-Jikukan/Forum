@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser")
 
 const username = "Fiamma";
 const password = "IKilledThePope123";
-const siteControl = { authenticated: false, message: "Please log in" }
+const siteControl = { authenticated: false, message: "Please log in", wrong: false }
 
 
 const app = express();
@@ -66,12 +66,12 @@ app.post("/login", async (req, res) => {
             res.end()
         } else {
             console.log(req.cookies);
-            siteControl.message = "wrong username or password"
+            alert("wrong username or password")
             res.redirect('/');
         }
     }
     catch (err) {
-        res.render('index', { title: 'Error', message: 'Please log in' });
+        res.redirect('/');
     }
 })
 
