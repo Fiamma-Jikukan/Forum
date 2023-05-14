@@ -11,10 +11,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use((req, res, next) => {
-//     console.log(req.method + " " + req.path + "-" + req.ip);
-//     next()
-// })
+
 app.use("/public", express.static(__dirname + "/public"));
 // get requests
 app.get("/", (req, res) => {
