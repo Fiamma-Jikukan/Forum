@@ -18,6 +18,8 @@ app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
+const { users } = require('./users')
+    console.log(users);
     const { cookies } = req
     try {
         if (cookies.session_id === undefined) {
@@ -43,11 +45,14 @@ app.get("/", (req, res) => {
     res.render('index', siteControl);
 })
 // post requests
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
     try{
-        
+        console.log("huh?");
+        users[req.body.username] = req.body.password;
+        res.redirect('/');
 
     } catch (err) {
+        res.redirect('/');
 
     }
 })

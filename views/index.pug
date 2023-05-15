@@ -18,26 +18,26 @@ html
         else 
            h1(class="title").border.center Welcome!
            div(class="user")
-             div(class="login")
-                 h2 log in
-                 h3 #{message}
-                 form(action='/login' method='post')
-                    div
-                        label Username: 
-                        input(type='text' name='username' )
-                    div
-                        label Password: 
-                        input(type='password' name='password')
-                    div
-                    input(type='submit' value='Log In')    
-             div(class="signup")    
+                div(class="login")
+                    h2 log in
+                    h3 #{message}
+                    form(action='/login' method='post')
+                       div
+                           label Username: 
+                           input(type='text' name='username' )
+                       div
+                           label Password: 
+                           input(type='password' name='password')
+                       div
+                       input(type='submit' value='Log In')    
+                div(class="signup")    
                     h2 Sign Up
                     form(action='/signup' method='post')
-                    div
-                        label Username: 
-                        input(type='text' name='username' )
-                    div
-                        label Password: 
-                        input(type='password' name='password')
-                    div
-                    input(type='submit' value='Sign Up')   
+                       div
+                           label Username: 
+                           input(type='text' name='username' )
+                       div
+                           label Password: 
+                           input(type='password' name='password')
+                       div
+                       input(type='submit' value='Sign Up')   
