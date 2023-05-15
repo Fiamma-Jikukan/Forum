@@ -4,8 +4,7 @@ const bodyParser = require("body-parser")
 require('dotenv').config()
 const cookieParser = require("cookie-parser")
 
-const { users } = require('./users')
-const { sessions } = require('./users')
+const { users, sessions } = require('./users')
 const siteControl = { authenticated: false, message: "Please log in", wrong: false }
 
 
@@ -16,9 +15,7 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
-
 app.use((req, res, next) => {
-const { users } = require('./users')
     console.log(users);
     const { cookies } = req
     try {
@@ -26,7 +23,7 @@ const { users } = require('./users')
             siteControl.authenticated = false;
             next()
         } else {
-            if (sessions.hasOwnProperty(cookies.session_id)) {
+            if (sessions[cookies.session_id]) {
                 siteControl.authenticated = true;
                 siteControl.user = sessions[cookies.session_id.toString()]
             } else {
@@ -67,7 +64,7 @@ app.post("/login", async (req, res) => {
                 res.redirect('/');
             }
         } else {
-            siteControl.failedUsser = req.body.username
+            siteControl.failedUser = req.body.username
             siteControl.failedPass = req.body.password
             res.render('index', siteControl);
         }
