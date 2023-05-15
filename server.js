@@ -63,11 +63,10 @@ app.post("/login", async (req, res) => {
             console.log("this is the session id: " + app.locals.session_id);
             console.log("this is the session id: " + req.cookies.session_id);
             res.redirect('/');
-            res.end()
         } else {
             console.log(req.cookies);
             alert("wrong username or password")
-            res.redirect('/');
+            res.render('index');
         }
     }
     catch (err) {
