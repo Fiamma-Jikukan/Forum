@@ -63,8 +63,6 @@ app.post("/login", async (req, res) => {
             res.redirect('/');
         }
     } else {
-        siteControl.failedUser = req.body.username
-        siteControl.failedPass = req.body.password
         res.render('index', siteControl);
     }
 
