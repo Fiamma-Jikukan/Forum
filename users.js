@@ -5,7 +5,6 @@ const users = {
 }
 
 const sessions = {
-    "this is sessions": "blkah"
 
 }
 

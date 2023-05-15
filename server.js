@@ -50,7 +50,6 @@ app.post("/signup", async (req, res) => {
 
     } catch (err) {
         res.redirect('/');
-
     }
 })
 
