@@ -7,30 +7,37 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-        h1(class="title").border.center Welcome!
-        div(class="user")
+        if authenticated
+          h1(class="title").border.center Welcome #{user}!
+          div(class="user")
             div(class="login")
-                h2 log in
-                if authenticated
+                 h2 log in
                  h3 You are logged in! 
                  form(action='/logout' method='post')
                     input(type='submit' value='Log Out')
-                else 
+        else 
+           h1(class="title").border.center Welcome!
+           div(class="user")
+             div(class="login")
+                 h2 log in
                  h3 #{message}
                  form(action='/login' method='post')
                     div
                         label Username: 
-                        input(type='text' name='username')
+                        input(type='text' name='username' )
                     div
                         label Password: 
                         input(type='password' name='password')
                     div
-                    input(type='submit' value='Log In')
-                
-                
-                 
-
-
-
-            div(class="signup")    
-                    h2 Sign up
+                    input(type='submit' value='Log In')    
+             div(class="signup")    
+                    h2 Sign Up
+                    form(action='/signup' method='post')
+                    div
+                        label Username: 
+                        input(type='text' name='username' )
+                    div
+                        label Password: 
+                        input(type='password' name='password')
+                    div
+                    input(type='submit' value='Sign Up')   
