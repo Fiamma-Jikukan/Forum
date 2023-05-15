@@ -43,44 +43,40 @@ app.get("/", (req, res) => {
 })
 // post requests
 app.post("/signup", async (req, res) => {
-    try{
-        console.log("huh?");
-        users[req.body.username] = req.body.password;
-        res.redirect('/');
 
-    } catch (err) {
-        res.redirect('/');
-    }
+    console.log("huh?");
+    users[req.body.username] = req.body.password;
+    res.redirect('/');
 })
 
 app.post("/login", async (req, res) => {
-    try {
-        if (users.hasOwnProperty(req.body.username)) {
-            if (users[req.body.username] === req.body.password) {
-                const session_id = Math.floor(Math.random() * 1000000);
-                sessions[session_id] = req.body.username
-                res.cookie('session_id', session_id);
-                res.redirect('/');
-            }
+
+    if (users[(req.body.username)]) {
+        if (users[req.body.username] === req.body.password) {
+            const session_id = Math.floor(Math.random() * 1000000);
+            sessions[session_id] = req.body.username
+            res.cookie('session_id', session_id);
+            res.redirect('/');
         } else {
             siteControl.failedUser = req.body.username
             siteControl.failedPass = req.body.password
-            res.render('index', siteControl);
+            res.redirect('/');
         }
+    } else {
+        siteControl.failedUser = req.body.username
+        siteControl.failedPass = req.body.password
+        res.render('index', siteControl);
     }
-    catch (err) {
-        res.redirect('/');
-    }
+
+
 })
 
 app.post("/logout", async (req, res) => {
-    try {
-        res.clearCookie('session_id');
-        res.redirect('/');
-    }
-    catch (err) {
-        res.send('error');
-    }
+
+    res.clearCookie('session_id');
+    res.redirect('/');
+
+
 })
 
 // port
