@@ -5,8 +5,6 @@ require('dotenv').config()
 const cookieParser = require("cookie-parser")
 
 const { users, sessions } = require('./users')
-const siteControl = { authenticated: false, message: "Please log in", wrong: false }
-
 
 const app = express();
 // middleware
@@ -15,36 +13,15 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
-app.use((req, res, next) => {
-    console.log(users);
-    const { cookies } = req
-    try {
-        if (cookies.session_id === undefined) {
-            siteControl.authenticated = false;
-            next()
-        } else {
-            if (sessions[cookies.session_id]) {
-                siteControl.authenticated = true;
-                siteControl.user = sessions[cookies.session_id.toString()]
-            } else {
-                siteControl.authenticated = false;
-            }
-        }
-    } catch {
-        next();
-    }
-
-    next()
-})
 
 // get requests
 app.get("/", (req, res) => {
-    res.render('index', siteControl);
+    const { cookies } = req
+    res.render('index', sessions[cookies.session_id]);
 })
 // post requests
 app.post("/signup", async (req, res) => {
 
-    console.log("huh?");
     users[req.body.username] = req.body.password;
     res.redirect('/');
 })
@@ -54,7 +31,7 @@ app.post("/login", async (req, res) => {
     if (users[(req.body.username)]) {
         if (users[req.body.username] === req.body.password) {
             const session_id = Math.floor(Math.random() * 1000000);
-            sessions[session_id] = req.body.username
+            sessions[session_id] = { user: req.body.username }
             res.cookie('session_id', session_id);
             res.redirect('/');
         } else {
@@ -63,18 +40,17 @@ app.post("/login", async (req, res) => {
             res.redirect('/');
         }
     } else {
-        res.render('index', siteControl);
+        res.render('index', sessions);
     }
 
 
 })
 
 app.post("/logout", async (req, res) => {
-
+    const { cookies } = req
+    delete sessions[cookies.session_id]
     res.clearCookie('session_id');
     res.redirect('/');
-
-
 })
 
 // port
