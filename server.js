@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
     try {
         const currentSession = await Session.findById(cookies.session_id)
         if (currentSession === null) {
-            res.render('index');
+            res.render('index', currentSession);
         } else {
             res.render('index', currentSession);
         }
@@ -65,6 +65,7 @@ app.post("/signup", async (req, res) => {
 
 app.post("/login", async (req, res) => {
     const loginuser = await User.findOne({ username: req.body.username })
+    console.log(loginuser);
     try {
         if (loginuser) {
             if (loginuser.password === req.body.password) {
@@ -75,10 +76,11 @@ app.post("/login", async (req, res) => {
                 console.log("session added");
                 res.cookie('session_id', newSession.id);
             } else {
+                console.log("wrong username or password");
                 res.redirect('/');
             }
         } else {
-            res.render('index', sessions);
+            res.redirect('/');
         }
     } catch (err) {
         res.status(500).json({ result: 'bad', error: err.message })
