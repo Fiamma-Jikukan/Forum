@@ -7,7 +7,7 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-        if authenticated
+        if user
           h1(class="title").border.center Welcome #{user}!
           div(class="user")
             div(class="login")
@@ -20,7 +20,7 @@ html
            div(class="user")
                 div(class="login")
                     h2 log in
-                    h3 #{message}
+                    h3 Please log in
                     form(action='/login' method='post')
                        div
                            label Username: 
