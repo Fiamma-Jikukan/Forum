@@ -35,10 +35,15 @@ app.get("/", async (req, res) => {
         }
 
     } catch (err) {
-        res.status(500).json({ result: 'bad', error: err.message })
+        res.render('error', {"error message": err})
     }
-
 })
+
+app.get("/error", async (req, res) => {
+    res.render('error');
+})
+
+
 // post requests
 app.post("/signup", async (req, res) => {
     const signupUser = await User.findOne({ username: req.body.username })
@@ -56,7 +61,7 @@ app.post("/signup", async (req, res) => {
         }
 
     } catch (err) {
-        res.status(500).json({ result: 'bad', error: err.message })
+        res.render('error', {"error message": err})
     }
 
     // users[req.body.username] = req.body.password;
@@ -83,7 +88,7 @@ app.post("/login", async (req, res) => {
             res.redirect('/');
         }
     } catch (err) {
-        res.status(500).json({ result: 'bad', error: err.message })
+        res.render('error', {"error message": err})
     }
 
     res.redirect('/');
@@ -102,10 +107,7 @@ app.post("/logout", async (req, res) => {
         res.redirect('/');
 
     } catch (err) {
-        const currentSession = await Session.findById(cookies.session_id)
-        console.log(currentSession);
-        res.status(500).json({ result: 'bad', error: err.message })
-
+        res.render('error', {"error-message": err})
     }
 
 })
