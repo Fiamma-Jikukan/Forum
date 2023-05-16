@@ -35,8 +35,6 @@ app.post("/login", async (req, res) => {
             res.cookie('session_id', session_id);
             res.redirect('/');
         } else {
-            siteControl.failedUser = req.body.username
-            siteControl.failedPass = req.body.password
             res.redirect('/');
         }
     } else {
