@@ -35,14 +35,13 @@ app.get("/", async (req, res) => {
         }
 
     } catch (err) {
-        res.render('error', {"error message": err})
+        res.render('error', { "error message": err })
     }
 })
 
 app.get("/error", async (req, res) => {
     res.render('error');
 })
-
 
 // post requests
 app.post("/signup", async (req, res) => {
@@ -61,7 +60,7 @@ app.post("/signup", async (req, res) => {
         }
 
     } catch (err) {
-        res.render('error', {"error message": err})
+        res.render('error', { "error message": err })
     }
 
     // users[req.body.username] = req.body.password;
@@ -80,6 +79,8 @@ app.post("/login", async (req, res) => {
                 console.log(newSession.id);
                 console.log("session added");
                 res.cookie('session_id', newSession.id);
+                res.redirect('/');
+
             } else {
                 console.log("wrong username or password");
                 res.redirect('/');
@@ -88,29 +89,40 @@ app.post("/login", async (req, res) => {
             res.redirect('/');
         }
     } catch (err) {
-        res.render('error', {"error message": err})
+        res.render('error', { "error message": err })
     }
-
-    res.redirect('/');
-
-
-
 })
 
 app.post("/logout", async (req, res) => {
     const { cookies } = req
     try {
         const currentSession = await Session.findById(cookies.session_id)
-        const deleteSession = await Session.findOneAndDelete(currentSession.id)
+        const deleteSession = await Session.findByIdAndDelete(currentSession.id)
         res.clearCookie('session_id');
         console.log("session removed");
         res.redirect('/');
 
     } catch (err) {
-        res.render('error', {"error-message": err})
+        res.render('error', { "error-message": err })
     }
-
 })
+
+app.post("/remove", async (req, res) => {
+    const { cookies } = req
+    try {
+        const currentSession = await Session.findById(cookies.session_id)
+        const currentUser = currentSession.user
+        const deleteSession = await Session.findOneAndDelete(currentSession.id)
+        res.clearCookie('session_id');
+        const deleteUser = await User.findOneAndDelete({ username: currentUser })
+        res.redirect('/');
+
+    } catch (err) {
+        res.render('error', { "error-message": err })
+    }
+})
+
+
 
 // port
 app.listen(3000, () => {

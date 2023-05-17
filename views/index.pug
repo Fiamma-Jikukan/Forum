@@ -15,6 +15,8 @@ html
                  h3 You are logged in! 
                  form(action='/logout' method='post')
                     input(type='submit' value='Log Out')
+                 form(action='/remove' method='post')
+                    input(type='submit' value='Delete User')
         else 
            h1(class="title").border.center Welcome!
            div(class="user")
