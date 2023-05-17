@@ -69,7 +69,6 @@ app.post("/signup", async (req, res) => {
 
 app.post("/login", async (req, res) => {
     const loginuser = await User.findOne({ username: req.body.username })
-    console.log(loginuser);
     try {
         if (loginuser) {
             if (loginuser.password === req.body.password) {
