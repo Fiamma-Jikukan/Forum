@@ -26,22 +26,12 @@ const sessionSchema = new Schema({
 let Session = mongoose.model("Session", sessionSchema);
 
 
-const users = {
-    "Fiamma": "IKilledThePope123",
-    "Madara": "KageJoke",
-    "admin": "admin"
-}
 
-const sessions = {
-
-}
 
 module.exports = {
     Schema,
     userSchema,
     User,
-    users,
-    sessions,
     connect,
     sessionSchema,
     Session

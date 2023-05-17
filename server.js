@@ -8,8 +8,6 @@ const bcrypt = require('bcrypt');
 const { Schema,
     userSchema,
     User,
-    users,
-    sessions,
     connect,
     sessionSchema,
     Session } = require("./users.js")
@@ -69,7 +67,6 @@ app.post("/login", async (req, res) => {
     try {
         if (loginuser) {
             const validate = await bcrypt.compare(req.body.password, loginuser.password)
-            console.log(validate);
             if (validate) {
                 const newSession = await Session.create({
                     user: req.body.username,
@@ -104,9 +101,11 @@ app.post("/logout", async (req, res) => {
 app.post("/remove", async (req, res) => {
     const { cookies } = req
     try {
+        console.log(cookies.session_id);
         const currentSession = await Session.findById(cookies.session_id)
         const currentUser = currentSession.user
-        const deleteSession = await Session.findOneAndDelete(currentSession.id)
+        console.log(currentUser);
+        const deleteSession = await Session.deleteMany({user: currentUser})
         res.clearCookie('session_id');
         const deleteUser = await User.findOneAndDelete({ username: currentUser })
         res.redirect('/');
