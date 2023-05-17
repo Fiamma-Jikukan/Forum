@@ -68,7 +68,7 @@ app.post("/login", async (req, res) => {
     const loginuser = await User.findOne({ username: req.body.username })
     try {
         if (loginuser) {
-            const validate = await bcrypt.compare( req.body.password, loginuser.password)
+            const validate = await bcrypt.compare(req.body.password, loginuser.password)
             console.log(validate);
             if (validate) {
                 const newSession = await Session.create({
