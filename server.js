@@ -4,7 +4,7 @@ const session = require("express-session")
 const bodyParser = require("body-parser")
 require('dotenv').config()
 const cookieParser = require("cookie-parser")
-
+const bcrypt = require('bcrypt');
 const { Schema,
     userSchema,
     User,
@@ -50,9 +50,10 @@ app.post("/signup", async (req, res) => {
         if (signupUser) {
             res.redirect('/');
         } else {
-            const newUser = await User.create({
+            const hashedPass = await bcrypt.hash(req.body.password, 10)
+            const newUser = User.create({
                 username: req.body.username,
-                password: req.body.password,
+                password: hashedPass,
             });
             console.log("user added");
             res.redirect('/');
@@ -67,7 +68,9 @@ app.post("/login", async (req, res) => {
     const loginuser = await User.findOne({ username: req.body.username })
     try {
         if (loginuser) {
-            if (loginuser.password === req.body.password) {
+            const validate = await bcrypt.compare( req.body.password, loginuser.password)
+            console.log(validate);
+            if (validate) {
                 const newSession = await Session.create({
                     user: req.body.username,
                 });
