@@ -37,6 +37,32 @@ app.get("/", async (req, res) => {
     }
 })
 
+app.get("/profile/:id", async (req, res) => {
+    const { cookies } = req
+    try {
+        const currentSession = await Session.findById(cookies.session_id)
+        const curentuser = await User.findOne({username: currentSession.user})
+        console.log(curentuser);
+        console.log(curentuser.id);
+        console.log(currentSession.id);
+        if (req.params.id !== curentuser.id) {
+            res.redirect('/')
+        } else {
+            if (cookies.session_id) {
+                res.render("profile", currentSession)
+            } else {
+                res.redirect('/')
+            }
+        }
+
+    } catch (err) {
+        res.redirect('/')
+    }
+
+
+
+})
+
 app.get("/error", async (req, res) => {
     res.render('error');
 })
@@ -72,7 +98,9 @@ app.post("/login", async (req, res) => {
                     user: req.body.username,
                 });
                 res.cookie('session_id', newSession.id);
-                res.redirect('/');
+                console.log(loginuser.id);
+                res.redirect(`/profile/${loginuser.id}`);
+
 
             } else {
                 res.redirect('/');
@@ -105,7 +133,7 @@ app.post("/remove", async (req, res) => {
         const currentSession = await Session.findById(cookies.session_id)
         const currentUser = currentSession.user
         console.log(currentUser);
-        const deleteSession = await Session.deleteMany({user: currentUser})
+        const deleteSession = await Session.deleteMany({ user: currentUser })
         res.clearCookie('session_id');
         const deleteUser = await User.findOneAndDelete({ username: currentUser })
         res.redirect('/');
