@@ -48,7 +48,6 @@ app.post("/signup", async (req, res) => {
     const signupUser = await User.findOne({ username: req.body.username })
     try {
         if (signupUser) {
-            console.log("user not added");
             res.redirect('/');
         } else {
             const newUser = await User.create({
@@ -62,9 +61,6 @@ app.post("/signup", async (req, res) => {
     } catch (err) {
         res.render('error', { "error message": err })
     }
-
-    // users[req.body.username] = req.body.password;
-    // res.redirect('/');
 })
 
 app.post("/login", async (req, res) => {
@@ -75,13 +71,10 @@ app.post("/login", async (req, res) => {
                 const newSession = await Session.create({
                     user: req.body.username,
                 });
-                console.log(newSession.id);
-                console.log("session added");
                 res.cookie('session_id', newSession.id);
                 res.redirect('/');
 
             } else {
-                console.log("wrong username or password");
                 res.redirect('/');
             }
         } else {
@@ -98,7 +91,6 @@ app.post("/logout", async (req, res) => {
         const currentSession = await Session.findById(cookies.session_id)
         const deleteSession = await Session.findByIdAndDelete(currentSession.id)
         res.clearCookie('session_id');
-        console.log("session removed");
         res.redirect('/');
 
     } catch (err) {
@@ -120,8 +112,6 @@ app.post("/remove", async (req, res) => {
         res.render('error', { "error-message": err })
     }
 })
-
-
 
 // port
 app.listen(3000, () => {
