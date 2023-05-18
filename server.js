@@ -29,24 +29,14 @@ app.use(
             mongoUrl: process.env.DATABASE
         })
     }))
-app.use( async (req, res, next) => {
-    console.log(req.session);
-    const curentuser = await Session.find({})
-    console.log(curentuser[0]);
-    next()
-})
 
 // get requests
 app.get("/", async (req, res) => {
-    // const { cookies } = req
     try {
-        // const currentSession = await Session.findById(cookies.session_id)
         if (req.session.user === undefined) {
             res.render('index')
         } else {
             res.render('index', req.session)
-
-            // res.render('index', req.session.user);
         }
     } catch (err) {
         res.render('error', { "error message": err })
@@ -72,8 +62,7 @@ app.get("/profile/:id", async (req, res) => {
 })
 
 app.get("/passing", async (req, res) => {
-    // const { cookies } = req
-    // const currentSession = await Session.findById(cookies.session_id)
+   
     const curentuser = await User.findOne({ username: req.session.user })
     res.redirect(`/profile/${curentuser.id}`);
 })
@@ -147,7 +136,7 @@ app.post("/remove", async (req, res) => {
         const currentUser = req.session.user
         console.log(req.session.user);
         const deleteSession = await Session.deleteMany({ session: {user: currentUser} })
-        req.session.destroy()
+        req.session.destroy({user: curentuser.toString()})
         const deleteUser = await User.findOneAndDelete({ username: currentUser })
         res.redirect('/');
 
