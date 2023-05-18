@@ -46,7 +46,7 @@ app.get("/profile/:id", async (req, res) => {
         console.log(curentuser.id);
         console.log(currentSession.id);
         if (req.params.id !== curentuser.id) {
-            res.redirect('/')
+            res.redirect(`/profile/${curentuser.id}`)
         } else {
             if (cookies.session_id) {
                 res.render("profile", currentSession)
@@ -58,9 +58,13 @@ app.get("/profile/:id", async (req, res) => {
     } catch (err) {
         res.redirect('/')
     }
+})
 
-
-
+app.get("/passing", async (req, res) => {
+    const { cookies } = req
+    const currentSession = await Session.findById(cookies.session_id)
+    const curentuser = await User.findOne({username: currentSession.user})
+    res.redirect(`/profile/${curentuser.id}`);
 })
 
 app.get("/error", async (req, res) => {
@@ -100,8 +104,6 @@ app.post("/login", async (req, res) => {
                 res.cookie('session_id', newSession.id);
                 console.log(loginuser.id);
                 res.redirect(`/profile/${loginuser.id}`);
-
-
             } else {
                 res.redirect('/');
             }

@@ -7,12 +7,13 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-          h1(class="title").border.center Welcome #{user}!
-          div(class="user")
-            div(class="login")
-                 h2 log in
-                 h3 You are logged in! 
-                 form(action='/logout' method='post')
-                    input(type='submit' value='Log Out')
-                 form(action='/remove' method='post')
-                    input(type='submit' value='Delete User')
+        div(class="login")
+            h1(class="title").border.center Welcome #{user}!
+            h2 log in
+            h3 You are logged in! 
+            form(action='/' method='get')
+                input(type='submit' value='Go to home page')
+            form(action='/logout' method='post')
+                input(type='submit' value='Log Out')
+            form(action='/remove' method='post')
+                input(type='submit' value='Delete User')
