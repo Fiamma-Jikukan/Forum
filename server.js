@@ -11,6 +11,8 @@ const { Schema,
     connect,
     sessionSchema,
     Session } = require("./users.js")
+const MongoStore = require("connect-mongo")
+
 
 
 const app = express();
@@ -41,7 +43,7 @@ app.get("/profile/:id", async (req, res) => {
     const { cookies } = req
     try {
         const currentSession = await Session.findById(cookies.session_id)
-        const curentuser = await User.findOne({username: currentSession.user})
+        const curentuser = await User.findOne({ username: currentSession.user })
         console.log(curentuser);
         console.log(curentuser.id);
         console.log(currentSession.id);
@@ -63,7 +65,7 @@ app.get("/profile/:id", async (req, res) => {
 app.get("/passing", async (req, res) => {
     const { cookies } = req
     const currentSession = await Session.findById(cookies.session_id)
-    const curentuser = await User.findOne({username: currentSession.user})
+    const curentuser = await User.findOne({ username: currentSession.user })
     res.redirect(`/profile/${curentuser.id}`);
 })
 
