@@ -28,39 +28,41 @@ app.get("/", async (req, res) => {
             res.render('index');
             return;
         }
-        const currentUser = await User.findById(req.cookies.session.user);
-
+        console.log(req.cookies.session);
+        const currentSession = await Session.findById(req.cookies.session);
+        if (!currentSession) {
+            res.clearCookie('session');
+            res.render('index');
+            return;
+        }
+        const currentUser = await User.findById(currentSession.user);
         if (!currentUser) {
             res.clearCookie('session');
             res.render('index');
             return
         }
-        res.redirect(`profile/${req.cookies.session.user}`);
+        res.redirect('/profile');
     } catch (err) {
         res.render('error', { "error message": err })
     }
 })
 
-app.get("/profile/:id", async (req, res) => {
+app.get("/profile", async (req, res) => {
     try {
-        const tryingUser = await User.findById(req.params.id)
-        if (!tryingUser) {
+        if (!req.cookies.session) {
             res.redirect('/')
             return;
         }
-        if (req.params.id !== req.cookies.session.user) {
+        const currentSession = await Session.findById(req.cookies.session);
+        const currentUser = await User.findById(currentSession.user);
+        if (!currentUser) {
             res.redirect('/')
             return;
         }
-        res.render("profile", tryingUser)
+        res.render("profile", currentUser)
     } catch (err) {
         res.redirect('/')
     }
-})
-
-app.get("/passing", async (req, res) => {
-    const curentuser = await User.findOne({ _id: req.cookies.session.user })
-    res.redirect(`/profile/${curentuser.id}`);
 })
 
 app.get("/error", async (req, res) => {
@@ -101,10 +103,9 @@ app.post("/login", async (req, res) => {
         const newSession = await Session.create({
             user: loginuser.id,
         });
-        res.cookie('session', newSession);
+        res.cookie('session', newSession.id);
+        console.log(req.cookies);
         res.redirect('/');
-
-
     }
     catch (err) {
         res.render('error', { "error message": err })
@@ -124,9 +125,11 @@ app.post("/logout", async (req, res) => {
 
 app.post("/remove", async (req, res) => {
     try {
-        const deleteSession = await Session.deleteMany({ user: req.cookies.session.user })
+        const currentSession = await Session.findById(req.cookies.session);
+        const currentUser = await User.findById(currentSession.user);
+        const deleteSession = await Session.deleteMany({ user: currentUser.id })
         res.clearCookie('session');
-        const deleteUser = await User.findOneAndDelete({ _id: req.cookies.session.user })
+        const deleteUser = await User.findOneAndDelete({ _id: currentUser.id })
         res.redirect('/');
 
     } catch (err) {
