@@ -9,10 +9,7 @@ html
     body
         div(class="login")
             h1(class="title").border.center Welcome #{username}!
-            h2 log in
             h3 You are logged in! 
-            form(action='/' method='get')
-                input(type='submit' value='Go to home page')
             form(action='/logout' method='post')
                 input(type='submit' value='Log Out')
             form(action='/remove' method='post')
