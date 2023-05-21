@@ -20,10 +20,6 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
-// app.use((req, res, next) => {
-//     console.log(req.cookies.session);
-//     next();
-// })
 
 // get requests
 app.get("/", async (req, res) => {
@@ -46,12 +42,10 @@ app.get("/", async (req, res) => {
 
 app.get("/profile/:id", async (req, res) => {
     try {
-        // check if user exsists
         const tryingUser = await User.findById(req.params.id)
         if (!tryingUser) {
             res.redirect('/')
         } else {
-            // check if user id matches session
             if (req.params.id !== req.cookies.session.user) {
                 res.redirect('/')
             } else {
@@ -85,7 +79,6 @@ app.post("/signup", async (req, res) => {
                 username: req.body.username,
                 password: hashedPass,
             });
-            console.log("user added");
             res.redirect('/');
         }
 
