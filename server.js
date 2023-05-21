@@ -26,15 +26,16 @@ app.get("/", async (req, res) => {
     try {
         if (!req.cookies.session) {
             res.render('index');
-        } else {
-            const currentUser = await User.findById(req.cookies.session.user);
-            if (currentUser) {
-                res.redirect(`profile/${req.cookies.session.user}`);
-            } else {
-                res.clearCookie('session');
-                res.render('index');
-            }
+            return;
         }
+        const currentUser = await User.findById(req.cookies.session.user);
+
+        if (!currentUser) {
+            res.clearCookie('session');
+            res.render('index');
+            return
+        }
+        res.redirect(`profile/${req.cookies.session.user}`);
     } catch (err) {
         res.render('error', { "error message": err })
     }
@@ -45,14 +46,13 @@ app.get("/profile/:id", async (req, res) => {
         const tryingUser = await User.findById(req.params.id)
         if (!tryingUser) {
             res.redirect('/')
-        } else {
-            if (req.params.id !== req.cookies.session.user) {
-                res.redirect('/')
-            } else {
-                res.render("profile", tryingUser)
-            }
-
+            return;
         }
+        if (req.params.id !== req.cookies.session.user) {
+            res.redirect('/')
+            return;
+        }
+        res.render("profile", tryingUser)
     } catch (err) {
         res.redirect('/')
     }
@@ -73,15 +73,14 @@ app.post("/signup", async (req, res) => {
     try {
         if (signupUser) {
             res.redirect('/');
-        } else {
-            const hashedPass = await bcrypt.hash(req.body.password, 10)
-            const newUser = User.create({
-                username: req.body.username,
-                password: hashedPass,
-            });
-            res.redirect('/');
+            return;
         }
-
+        const hashedPass = await bcrypt.hash(req.body.password, 10)
+        const newUser = User.create({
+            username: req.body.username,
+            password: hashedPass,
+        });
+        res.redirect('/');
     } catch (err) {
         res.render('error', { "error message": err })
     }
@@ -92,18 +91,20 @@ app.post("/login", async (req, res) => {
         const loginuser = await User.findOne({ username: req.body.username })
         if (!loginuser) {
             res.redirect('/');
-        } else {
-            const validate = await bcrypt.compare(req.body.password, loginuser.password)
-            if (!validate) {
-                res.redirect('/');
-            } else {
-                const newSession = await Session.create({
-                    user: loginuser.id,
-                });
-                res.cookie('session', newSession);
-                res.redirect('/');
-            }
+            return;
         }
+        const validate = await bcrypt.compare(req.body.password, loginuser.password)
+        if (!validate) {
+            res.redirect('/');
+            return;
+        }
+        const newSession = await Session.create({
+            user: loginuser.id,
+        });
+        res.cookie('session', newSession);
+        res.redirect('/');
+
+
     }
     catch (err) {
         res.render('error', { "error message": err })
