@@ -10,7 +10,8 @@ const { Schema,
     User,
     connect,
     sessionSchema,
-    Session } = require("./users.js")
+    Session } = require("./users.js");
+const { time } = require("console");
 
 
 const app = express();
@@ -20,6 +21,21 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
+// app.use(async (req, res, next) => {
+//     try {
+//         const currentTime = new Date()
+//         // console.log(currentTime.getMinutes());
+//         const SessionTime = await Session.find({timeCreated: { $gte: 60 * 10000 * 5 } })
+//         console.log(SessionTime);
+//         // const deleteAllIreleventSessions = await Session.deleteMany({})
+//         next()
+//     } catch (err) {
+//         res.redirect('/')
+//     }
+//     // console.log(req.cookies);
+//     // next()
+
+// })
 
 // get requests
 app.get("/", async (req, res) => {
@@ -62,6 +78,7 @@ app.get("/profile", async (req, res) => {
             res.redirect('/')
             return;
         }
+        console.log(currentSession.timeCreated);
         res.render("profile", currentUser)
     } catch (err) {
         res.redirect('/')
@@ -105,8 +122,9 @@ app.post("/login", async (req, res) => {
         }
         const newSession = await Session.create({
             user: loginuser.id,
+            timeCreated: new Date()
         });
-        res.cookie('session', newSession.id);
+        res.cookie('session', newSession.id, { maxAge: 1000 * 60 * 60 * 24 });
         res.redirect('/');
     }
     catch (err) {
@@ -116,7 +134,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", async (req, res) => {
     try {
-        const deleteSession = await Session.findByIdAndDelete(req.cookies.session._id)
+        const deleteSession = await Session.findByIdAndDelete(req.cookies.session)
         res.clearCookie('session');
         res.redirect('/');
 

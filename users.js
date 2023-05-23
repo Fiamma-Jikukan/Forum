@@ -22,6 +22,10 @@ const sessionSchema = new Schema({
         type: Object,
         required: true
     },
+    timeCreated: {
+        type: Date,
+        expires: 1 * 60 * 60 * 24
+    }
 })
 let Session = mongoose.model("Session", sessionSchema);
 
