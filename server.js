@@ -81,6 +81,11 @@ app.post("/signup", async (req, res) => {
             res.redirect('/');
             return;
         }
+        var passRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+        if(!passRegex.test(req.body.password)) {
+            res.redirect('/');
+            return;
+        }
         const hashedPass = await bcrypt.hash(req.body.password, 10)
         const newUser = User.create({
             username: req.body.username,

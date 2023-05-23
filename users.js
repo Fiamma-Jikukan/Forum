@@ -12,15 +12,15 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
-    },
+        required: true,
+    }
 })
 let User = mongoose.model("User", userSchema);
 const oneDay = 1 * 60 * 60 * 24
 const sessionSchema = new Schema({
     user: {
         type: Object,
-        required: true
+        required: true,
     },
     timeCreated: {
         type: Date,
