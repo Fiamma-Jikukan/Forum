@@ -21,21 +21,6 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 app.use(cookieParser());
-// app.use(async (req, res, next) => {
-//     try {
-//         const currentTime = new Date()
-//         // console.log(currentTime.getMinutes());
-//         const SessionTime = await Session.find({timeCreated: { $gte: 60 * 10000 * 5 } })
-//         console.log(SessionTime);
-//         // const deleteAllIreleventSessions = await Session.deleteMany({})
-//         next()
-//     } catch (err) {
-//         res.redirect('/')
-//     }
-//     // console.log(req.cookies);
-//     // next()
-
-// })
 
 // get requests
 app.get("/", async (req, res) => {
@@ -78,7 +63,6 @@ app.get("/profile", async (req, res) => {
             res.redirect('/')
             return;
         }
-        console.log(currentSession.timeCreated);
         res.render("profile", currentUser)
     } catch (err) {
         res.redirect('/')

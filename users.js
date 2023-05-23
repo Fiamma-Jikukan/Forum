@@ -16,7 +16,7 @@ const userSchema = new Schema({
     },
 })
 let User = mongoose.model("User", userSchema);
-
+const oneDay = 1 * 60 * 60 * 24
 const sessionSchema = new Schema({
     user: {
         type: Object,
@@ -24,7 +24,7 @@ const sessionSchema = new Schema({
     },
     timeCreated: {
         type: Date,
-        expires: 1 * 60 * 60 * 24
+        expires: 86400
     }
 })
 let Session = mongoose.model("Session", sessionSchema);
