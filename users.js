@@ -1,10 +1,9 @@
+// set up mongoose
 const mongoose = require("mongoose")
-
 require('dotenv').config()
-
 const connect = mongoose.connect(process.env.DATABASE)
-
 const Schema = mongoose.Schema;
+// create user schema and model
 const userSchema = new Schema({
     username: {
         type: String,
@@ -16,7 +15,7 @@ const userSchema = new Schema({
     }
 })
 let User = mongoose.model("User", userSchema);
-const oneDay = 1 * 60 * 60 * 24
+// create session schema and model
 const sessionSchema = new Schema({
     user: {
         type: Object,
@@ -24,13 +23,10 @@ const sessionSchema = new Schema({
     },
     timeCreated: {
         type: Date,
-        expires: 86400
+        expires: 3600
     }
 })
 let Session = mongoose.model("Session", sessionSchema);
-
-
-
 
 module.exports = {
     Schema,
