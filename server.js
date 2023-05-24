@@ -11,7 +11,6 @@ const { Schema,
     connect,
     sessionSchema,
     Session } = require("./users.js");
-const { time } = require("console");
 
 
 const app = express();
