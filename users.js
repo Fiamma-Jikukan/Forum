@@ -28,11 +28,37 @@ const sessionSchema = new Schema({
 })
 let Session = mongoose.model("Session", sessionSchema);
 
+// create session schema and model
+const logSchema = new Schema({
+    user: {
+        type: Object,
+        required: true,
+    },
+    dateCreated: {
+        type: Date,
+        required: true,
+        default: new Date()
+    },
+    title: {
+        type: String,
+        maxLength: 100,
+        required: true
+    },
+    log: {
+        type: String,
+        maxLength: 500,
+        required: true
+    }
+})
+let Log = mongoose.model("Log", logSchema);
+
 module.exports = {
     Schema,
     userSchema,
     User,
     connect,
     sessionSchema,
-    Session
+    Session, 
+    logSchema,
+    Log
 }

@@ -8,9 +8,23 @@ html
         link(rel='stylesheet' href='/public/style.css')
     body
         div(class="login")
-            h1(class="title").border.center Welcome #{username}!
-            h3 You are logged in! 
+            h1(class="title").border.center Welcome #{user.username}!
+            h3 You are logged in!
             form(action='/logout' method='post')
                 input(type='submit' value='Log Out')
             form(action='/remove' method='post')
                 input(type='submit' value='Delete User')
+        div(class="logs") 
+            h3 Add a new log:
+            div
+              form(action='/addLog' method='post' class="newLog")
+                input(calss="titleOfNewLog" type='text' placeholder='Title Of New Log' name="title")
+                textarea(calss="contentOfNewLog" name="newLog" rows="10" cols="50")
+                input(calss="submitNewLog" type='submit' value='Add new log')
+            h3 Here are all of your logs:
+            each val in logs
+                div(class="log")
+                   h3(class="logTitle")= val.title
+                   p(class="logText")= val.log
+                   p(class="date")= val.dateandtime
+            

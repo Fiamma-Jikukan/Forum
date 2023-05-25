@@ -25,9 +25,68 @@ body {
 .login {
     flex: 1;
     background-color: red;
+    padding-bottom: 1em;
+
 }
 
 .signup {
     flex: 1;
     background-color: white;
+}
+
+.logs {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-bottom: 5em;
+}
+
+.newLog {
+    display: flex;
+    align-items: center;
+    padding: 2em;
+    gap: 1em;
+    flex-direction: column;
+    background-color: red;
+    margin-bottom: 1em;
+    
+}
+
+.titleOfNewLog {
+    padding: 1em;
+}
+
+.contentOfNewLog {
+    padding: 1em;
+}
+
+.submitNewLog {
+    padding: 1em;
+}
+
+.log {
+    background-color: blue;
+    padding: 1em;
+    margin: 1em;
+    border-style: solid;
+    border-color: black;
+}
+
+.logTitle {
+    /* padding: 1em; */
+    background-color: orange;
+    color: black;
+    font-size: x-large;
+}
+
+.date {
+    font-size: small;
+    padding: 1em;
+    text-align: right;
+}
+
+.logText {
+    padding: 1em;
 }

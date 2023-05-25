@@ -10,8 +10,9 @@ const { Schema,
     User,
     connect,
     sessionSchema,
-    Session } = require("./users.js");
-
+    Session,
+    logSchema,
+    Log } = require("./users.js");
 
 const app = express();
 // middleware
@@ -72,7 +73,13 @@ app.get("/profile", async (req, res) => {
             return;
         }
         // if it got here it means the user is authenticated.
-        res.render("profile", currentUser)
+        const allLogsOfUser = await Log.find({ user: currentUser.id });
+        const alltitlesAndLogs = allLogsOfUser.map((item) => {
+            return {title: item.title, log: item.log, dateandtime: item.dateCreated}
+        }).reverse()
+        console.log(alltitlesAndLogs);
+
+        res.render("profile", { user: currentUser, logs: alltitlesAndLogs })
     } catch (err) {
         res.redirect('/')
     }
@@ -129,7 +136,7 @@ app.post("/login", async (req, res) => {
             timeCreated: new Date()
         });
         // add cookie that holds the session. it will last one hour. (It will also be deleted from DB).
-        res.cookie('session', newSession.id, { maxAge: 1000 * 60 * 60  });
+        res.cookie('session', newSession.id, { maxAge: 1000 * 60 * 60 });
         res.redirect('/');
     }
     catch (err) {
@@ -165,6 +172,24 @@ app.post("/remove", async (req, res) => {
 
     } catch (err) {
         res.render('error', { "error-message": err })
+    }
+})
+
+app.post("/addLog", async (req, res) => {
+    try {
+        const currentSession = await Session.findById(req.cookies.session);
+        const currentUser = await User.findById(currentSession.user);
+        const currentTime = new Date()
+        console.log(currentUser.id);
+        const newLog = Log.create({
+            user: currentUser.id,
+            dateCreated: currentTime,
+            title: req.body.title,
+            log: req.body.newLog,
+        });
+        res.redirect('/')
+    } catch (err) {
+        res.render('error', { "error message": "err" })
     }
 })
 
