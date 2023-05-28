@@ -31,3 +31,8 @@ body {
     flex: 1;
     background-color: white;
 }
+
+.navbar {
+    text-align: right;
+    margin: 1em;
+}

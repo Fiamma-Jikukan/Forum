@@ -8,9 +8,12 @@ html
         link(rel='stylesheet' href='/public/style.css')
     body
         div(class="login")
-            h1(class="title").border.center Welcome #{username}!
-            h3 You are logged in! 
-            form(action='/logout' method='post')
-                input(type='submit' value='Log Out')
-            form(action='/remove' method='post')
-                input(type='submit' value='Delete User')
+            h1(class="title").border.center #{user.username}!
+            if session
+               h3 You are logged in! 
+               form(action='/logout' method='post')
+                   input(type='submit' value='Log Out')
+               form(action='/remove' method='post')
+                   input(type='submit' value='Delete User')
+            form(action='/' method='get')
+                   input(type='submit' value='Back to home page')

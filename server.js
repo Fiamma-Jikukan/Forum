@@ -10,7 +10,8 @@ const { Schema,
     User,
     connect,
     sessionSchema,
-    Session } = require("./users.js");
+    Session } = require("./database.js");
+    const post = require("./routes/this.js");
 
 
 const app = express();
@@ -22,9 +23,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 // parsing the cookies
 app.use(cookieParser());
+app.use('/post', post)
 
 // get requests
 app.get("/", async (req, res) => {
+    res.render("forum")
+ })
+
+
+app.get("/login", async (req, res) => {
     try {
         //check if there's a session. If not, render the loging main page.
         if (!req.cookies.session) {
@@ -46,33 +53,22 @@ app.get("/", async (req, res) => {
             return
         }
         // If it got here, it means that the user is authenticated and ready to go to personal profile page.
-        res.redirect('/profile');
+        res.redirect(`/profile/${currentUser.id}`);
     } catch (err) {
         res.render('error', { "error message": err })
     }
 })
 
-app.get("/profile", async (req, res) => {
+app.get("/profile/:id", async (req, res) => {
     try {
-        //check if there's a session. If not, direct to the loging main page. In case someone try to get to profile page without authentication.
-        if (!req.cookies.session) {
-            res.redirect('/')
-            return;
-        }
-        // check if session is in the database. If not, direct to main page. (the / will clear the cookie)
         const currentSession = await Session.findById(req.cookies.session);
-        if (!currentSession) {
-            res.redirect('/')
-            return;
-        }
-        // find user base on the session
-        const currentUser = await User.findById(currentSession.user);
+        const currentUser = await User.findById(req.params.id);
         if (!currentUser) {
             res.redirect('/')
             return;
         }
         // if it got here it means the user is authenticated.
-        res.render("profile", currentUser)
+        res.render(`profile`, {user: currentUser, session: currentSession})
     } catch (err) {
         res.redirect('/')
     }
@@ -167,6 +163,8 @@ app.post("/remove", async (req, res) => {
         res.render('error', { "error-message": err })
     }
 })
+
+
 
 // port
 app.listen(3000, () => {
