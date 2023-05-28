@@ -21,10 +21,13 @@ html
                 input(calss="titleOfNewLog" type='text' placeholder='Title Of New Log' name="title")
                 textarea(calss="contentOfNewLog" name="newLog" rows="10" cols="50")
                 input(calss="submitNewLog" type='submit' value='Add new log')
-            h3 Here are all of your logs:
-            each val in logs
-                div(class="log")
-                   h3(class="logTitle")= val.title
-                   p(class="logText")= val.log
-                   p(class="date")= val.dateandtime
+            if logs.length 
+                h3 Here are all of your logs:
+                each val in logs
+                   div(class="log")
+                      h3(class="logTitle")= val.title
+                      p(class="logText")= val.log
+                      p(class="date")= val.dateandtime
+            else 
+              h3 You have no logs, please create a new log.
             

@@ -165,6 +165,7 @@ app.post("/remove", async (req, res) => {
         // const deleteSession = await Session.deleteMany({}) // in case I want to remove all sessions from the DB at once.
         //delete all sessions of this user so that all devices he is conected to will be disconected.
         const deleteSession = await Session.deleteMany({ user: currentUser.id })
+        const allLogsOfUser = await Log.deleteMany({ user: currentUser.id });
         res.clearCookie('session');
         // delete user from DB
         const deleteUser = await User.findOneAndDelete({ _id: currentUser.id })
