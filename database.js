@@ -12,6 +12,9 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
+    },
+    admin: {
+        type: Boolean,
     }
 })
 let User = mongoose.model("User", userSchema);
@@ -41,7 +44,7 @@ const postSchema = new Schema({
         type: String,
         maxLength: 100000
     },
-    timeCreated: {
+    created: {
         type: Date,
         default: new Date()
     }    

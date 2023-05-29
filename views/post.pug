@@ -7,16 +7,13 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-           h1(class="title").border.center Welcome!
-           div(class="user")
-                div(class="login")
-                    h2 Post new post!
-                    form(action='/post' method='post')
-                       div
-                           h3 Title: 
-                           input(type='text' name='Title' )
-                       div
-                           h3 Post: 
-                           textarea( name='newPost' rows="10" cols="50")
-                       div
-                       input(type='submit' value='post')    
+        h1(class="title").border.center Welcome!
+        a(href="/") Back to main page 
+        div(class="user")
+             div(class="login")
+                 p this post was created by user #[a(href=`/profile/${user.id}`)  #{user.username}] at #{post.created}
+                 h2 #{post.title}
+                 p #{post.text}
+        if admin
+            p you are connected as admin
+        

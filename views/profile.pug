@@ -15,5 +15,6 @@ html
                    input(type='submit' value='Log Out')
                form(action='/remove' method='post')
                    input(type='submit' value='Delete User')
-            form(action='/' method='get')
-                   input(type='submit' value='Back to home page')
+            a(href="/") Back to main page 
+            if admin
+                p you are admin

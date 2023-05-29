@@ -38,3 +38,8 @@ body {
     gap: 1%;
     margin: 1em;
 }
+
+.thread{
+    background-color: red;
+    margin: 2em;
+}
