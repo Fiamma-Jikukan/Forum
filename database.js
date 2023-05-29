@@ -28,11 +28,33 @@ const sessionSchema = new Schema({
 })
 let Session = mongoose.model("Session", sessionSchema);
 
+const postSchema = new Schema({
+    user: {
+        type: Object,
+        required: true,
+    },
+    title: {
+        type: String,
+        maxLength: 50
+    },
+    text: {
+        type: String,
+        maxLength: 100000
+    },
+    timeCreated: {
+        type: Date,
+        default: new Date()
+    }    
+})
+let Post = mongoose.model("Post", postSchema);
+
 module.exports = {
     Schema,
     userSchema,
     User,
     connect,
     sessionSchema,
-    Session
+    Session,
+    postSchema,
+    Post
 }

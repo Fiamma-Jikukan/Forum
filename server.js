@@ -4,14 +4,15 @@ const session = require("express-session")
 const bodyParser = require("body-parser")
 require('dotenv').config()
 const cookieParser = require("cookie-parser")
-const bcrypt = require('bcrypt');
 const { Schema,
     userSchema,
     User,
     connect,
     sessionSchema,
     Session } = require("./database.js");
-    const post = require("./routes/this.js");
+    const post = require("./routes/post.js");
+    const login = require("./routes/login.js");
+    const signup = require("./routes/signup.js");
 
 
 const app = express();
@@ -23,41 +24,38 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(__dirname + "/public"));
 // parsing the cookies
 app.use(cookieParser());
-app.use('/post', post)
+
+app.use('/post', post);
+app.use('/login', login);
+app.use('/signup', signup);
+
 
 // get requests
 app.get("/", async (req, res) => {
-    res.render("forum")
- })
-
-
-app.get("/login", async (req, res) => {
     try {
-        //check if there's a session. If not, render the loging main page.
-        if (!req.cookies.session) {
-            res.render('index');
+         if (!req.cookies.session) {
+            res.render('forum');
             return;
         }
-        //try to get the current session from DB. If there's not, clear the useless cookie.
         const currentSession = await Session.findById(req.cookies.session);
         if (!currentSession) {
             res.clearCookie('session');
-            res.render('index');
+            res.render('forum');
             return;
         }
         //try to find the user based on the session. If not found, clear the useless cookie
         const currentUser = await User.findById(currentSession.user);
         if (!currentUser) {
             res.clearCookie('session');
-            res.render('index');
+            res.render('forum');
             return
         }
-        // If it got here, it means that the user is authenticated and ready to go to personal profile page.
-        res.redirect(`/profile/${currentUser.id}`);
+        res.render('forum', {user: currentUser});
     } catch (err) {
-        res.render('error', { "error message": err })
+        res.redirect('/')
     }
-})
+    res.render("forum")
+ })
 
 app.get("/profile/:id", async (req, res) => {
     try {
@@ -68,6 +66,7 @@ app.get("/profile/:id", async (req, res) => {
             return;
         }
         // if it got here it means the user is authenticated.
+       
         res.render(`profile`, {user: currentUser, session: currentSession})
     } catch (err) {
         res.redirect('/')
@@ -79,60 +78,6 @@ app.get("/error", async (req, res) => {
 })
 
 // post requests
-app.post("/signup", async (req, res) => {
-    try {
-        // check to see if user already exists.
-        const signupUser = await User.findOne({ username: req.body.username })
-        if (signupUser) {
-            res.redirect('/');
-            return;
-        }
-        // check to see if password is at least medium.
-        const passRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
-        if (!passRegex.test(req.body.password)) {
-            res.redirect('/');
-            return;
-        }
-        // hashing the password and creating a new user in the database.
-        const hashedPass = await bcrypt.hash(req.body.password, 10)
-        const newUser = User.create({
-            username: req.body.username,
-            password: hashedPass,
-        });
-        res.redirect('/');
-    } catch (err) {
-        res.render('error', { "error message": err })
-    }
-})
-
-app.post("/login", async (req, res) => {
-    try {
-        // check if username entered exists in DB. If not, direct to main page. 
-        const loginuser = await User.findOne({ username: req.body.username })
-        if (!loginuser) {
-            res.redirect('/');
-            return;
-        }
-        // validate the password.
-        const validate = await bcrypt.compare(req.body.password, loginuser.password)
-        if (!validate) {
-            res.redirect('/');
-            return;
-        }
-        // create a new session in the database. 
-        const newSession = await Session.create({
-            user: loginuser.id,
-            timeCreated: new Date()
-        });
-        // add cookie that holds the session. it will last one hour. (It will also be deleted from DB).
-        res.cookie('session', newSession.id, { maxAge: 1000 * 60 * 60  });
-        res.redirect('/');
-    }
-    catch (err) {
-        res.render('error', { "error message": err })
-    }
-})
-
 app.post("/logout", async (req, res) => {
     try {
         // delete the session from DB when user logs out.

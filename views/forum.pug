@@ -7,7 +7,16 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-           h1(class="title").border.center Welcome!
-           div(class="navbar")
-              a(href="login") login 
-           h2 Here are all the threads:
+           if user
+                h1(class="title").border.center Welcome #{user.username}!
+                div(class="navbar")
+                   a(href=`profile/${user.id}`) To profile page
+                div   
+                    a(href="post") add new thread
+           else  
+                h1(class="title").border.center Welcome!
+                div(class="navbar")
+                   a(href="login") login 
+                   a(href="signup") sign up
+           div   
+              h2 Here are all the threads:

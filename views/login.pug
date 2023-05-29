@@ -8,15 +8,19 @@ html
         link(rel='stylesheet' href='/public/style.css')
     body
            h1(class="title").border.center Welcome!
+           div(class="navbar")
+                a(href="/") Back to main page 
+                a(href="signup") sign up
            div(class="user")
                 div(class="login")
-                    h2 Post new post!
-                    form(action='/post' method='post')
+                    h2 log in
+                    h3 Please log in
+                    form(action='/login' method='post')
                        div
-                           h3 Title: 
-                           input(type='text' name='Title' )
+                           label Username: 
+                           input(type='text' name='username' )
                        div
-                           h3 Post: 
-                           textarea( name='newPost' rows="10" cols="50")
+                           label Password: 
+                           input(type='password' name='password')
                        div
-                       input(type='submit' value='post')    
+                       input(type='submit' value='Log In')  
