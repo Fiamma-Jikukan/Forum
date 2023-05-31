@@ -44,10 +44,6 @@ const postSchema = new Schema({
         type: String,
         maxLength: 100000
     },
-    replys: {
-        type: Object,
-        required: true,
-    },
     created: {
         type: Date,
         default: new Date()

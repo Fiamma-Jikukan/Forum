@@ -51,7 +51,6 @@ router.get("/:id", async (req, res) => {
                 time: item.created
             }
         })
-        console.log(replysOfThisPost);
         if (!replysOfThisPost) {
             res.render("post", { post: currentPost, user: maker })
             return;
@@ -100,22 +99,21 @@ router.post("/", async (req, res) => {
     try {
         const currentSession = await Session.findById(req.cookies.session);
         const currentUser = await User.findById(currentSession.user);
-        const newUser = Post.create({
+        const newPost = await Post.create({
             user: { id: currentUser.id, name: currentUser.username },
             title: req.body.title,
             text: req.body.post,
             created: new Date()
         });
-        res.redirect('/')
+        res.redirect(`/post/${newPost.id}`)
     } catch (err) {
-        res.redirect('/')
+        res.redirect('/error')
     }
 })
 
 router.post("/:id/reply", async (req, res) => {
     try {
         const currentPost = await Post.findById(req.params.id)
-        console.log(currentPost);
         if (!req.cookies.session) {
             res.redirect(`/post/${currentPost.id}`);
             return;
@@ -139,7 +137,6 @@ router.post("/:id/reply", async (req, res) => {
             reply: req.body.reply,
             created: new Date()
         });
-        console.log(newReply);
         res.redirect(`/post/${currentPost.id}`);
 
     } catch (err) {
