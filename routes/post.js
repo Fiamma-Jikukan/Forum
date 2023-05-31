@@ -9,7 +9,9 @@ const { Schema,
     sessionSchema,
     Session,
     postSchema,
-    Post } = require("../database.js");
+    Post,
+    replySchema,
+    Reply } = require("../database.js");
 
 const router = express.Router();
 
@@ -41,24 +43,53 @@ router.get("/:id", async (req, res) => {
     try {
         const currentPost = await Post.findById(req.params.id);
         const maker = await User.findById(currentPost.user.id);
-        console.log(maker);
-        if (!req.cookies.session) {
-            console.log("mega?");
+        const replysOfThisPostQ = await Reply.find({ post: req.params.id })
+        const replysOfThisPost = replysOfThisPostQ.map(item => {
+            return {
+                reply: item.reply,
+                user: {name: item.user.name, id: item.user.id},
+                time: item.created
+            }
+        })
+        console.log(replysOfThisPost);
+        if (!replysOfThisPost) {
             res.render("post", { post: currentPost, user: maker })
+            return;
+        }
+        if (!req.cookies.session) {
+            res.render("post", {
+                post: currentPost,
+                user: maker,
+                replys: replysOfThisPost
+            })
             return;
         }
         const currentSession = await Session.findById(req.cookies.session);
         const currentUser = await User.findById(currentSession.user);
-        console.log(currentUser);
         if (!currentUser) {
-            res.render("post", { post: currentPost, user: maker })
+            res.render("post", {
+                post: currentPost,
+                user: maker,
+                replys: replysOfThisPost
+            })
             return;
         }
         if (currentUser.admin === true) {
-            res.render("post", { post: currentPost, user: maker, admin: true })
+            res.render("post", {
+                post: currentPost,
+                user: maker,
+                replys: replysOfThisPost,
+                authenticated: true,
+                admin: true
+            })
             return
         }
-        res.render("post", { post: currentPost, user: maker })
+        res.render("post", {
+            post: currentPost,
+            user: maker,
+            replys: replysOfThisPost,
+            authenticated: true
+        })
     } catch (err) {
         res.redirect('/')
     }
@@ -80,5 +111,41 @@ router.post("/", async (req, res) => {
         res.redirect('/')
     }
 })
+
+router.post("/:id/reply", async (req, res) => {
+    try {
+        const currentPost = await Post.findById(req.params.id)
+        console.log(currentPost);
+        if (!req.cookies.session) {
+            res.redirect(`/post/${currentPost.id}`);
+            return;
+        }
+        const currentSession = await Session.findById(req.cookies.session);
+        if (!currentSession) {
+            res.clearCookie('session');
+            res.redirect(`/post/${currentPost.id}`);
+            return;
+        }
+        const currentUser = await User.findById(currentSession.user);
+        if (!currentUser) {
+            res.redirect(`/post/${currentPost.id}`);
+            return;
+        }
+        const newReply = await Reply.create({
+            user: {
+                id: currentUser.id, name: currentUser.username
+            },
+            post: currentPost.id,
+            reply: req.body.reply,
+            created: new Date()
+        });
+        console.log(newReply);
+        res.redirect(`/post/${currentPost.id}`);
+
+    } catch (err) {
+        res.render('error', { "error-message": err })
+    }
+})
+
 
 module.exports = router

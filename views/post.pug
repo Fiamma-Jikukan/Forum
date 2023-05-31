@@ -7,13 +7,25 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-        h1(class="title").border.center Welcome!
-        a(href="/") Back to main page 
-        div(class="user")
-             div(class="login")
-                 p this post was created by user #[a(href=`/profile/${user.id}`)  #{user.username}] at #{post.created}
-                 h2 #{post.title}
-                 p #{post.text}
         if admin
             p you are connected as admin
+        h1(class="title").border.center Welcome!
+        a(href="/") Back to main page 
+        div(class="post")
+            h2 #{post.title}
+            p #{post.text} 
+            div(class="info")
+                a(href=`/profile/${user.id}`) this post was created by user #{user.username} at #{post.created}
+        if authenticated
+            form(action=`${post.id}/reply` method='post')
+                div 
+                    textarea(name="reply", cols="100", rows="10")
+                div
+                    input(type='submit' value='make new reply') 
+        each val in replys 
+            div(class="reply")
+                p= val.reply
+                div(class="info")
+                    a(href=`/profile/${val.user.id}`) this reply was made by user #{val.user.name} at #{val.time}
+      
         

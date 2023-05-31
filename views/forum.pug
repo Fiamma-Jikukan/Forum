@@ -22,10 +22,10 @@ html
               if posts 
                 h2 Here are all the threads:
                 each val in posts 
-                  div(class="thread")
-                      a(href=`post/${val.id}`) 
-                        h3= val.title
-                        p= `this post was created by user ${val.user} at ${val.time}`
+                    div(class="thread")
+                        a(href=`post/${val.id}`) 
+                            h3= val.title
+                            p(class="info")= `this post was created by user ${val.user} at ${val.time}`
               
               else         
                  h2 There are no threads...

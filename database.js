@@ -44,12 +44,36 @@ const postSchema = new Schema({
         type: String,
         maxLength: 100000
     },
+    replys: {
+        type: Object,
+        required: true,
+    },
     created: {
         type: Date,
         default: new Date()
     }    
 })
 let Post = mongoose.model("Post", postSchema);
+
+const replySchema = new Schema({
+    user: {
+        type: Object,
+        required: true,
+    },
+    post: {
+        type: String,
+        required: true,
+    },
+    reply: {
+        type: String,
+        maxLength: 100000
+    },
+    created: {
+        type: Date,
+        default: new Date()
+    }    
+})
+let Reply = mongoose.model("Reply", replySchema);
 
 module.exports = {
     Schema,
@@ -59,5 +83,7 @@ module.exports = {
     sessionSchema,
     Session,
     postSchema,
-    Post
+    Post,
+    replySchema,
+    Reply
 }

@@ -9,12 +9,13 @@ html
     body
         div(class="login")
             h1(class="title").border.center #{user.username}!
-            if session
-               h3 You are logged in! 
-               form(action='/logout' method='post')
-                   input(type='submit' value='Log Out')
-               form(action='/remove' method='post')
-                   input(type='submit' value='Delete User')
+            if session || admin
+                h3 You are logged in! 
+                form(action='/logout' method='post')
+                    input(type='submit' value='Log Out')
+                form(action='/remove' method='post')
+                    input(type='submit' value='Delete User')
             a(href="/") Back to main page 
-            if admin
-                p you are admin
+            if admin  
+                p as an admin
+              
