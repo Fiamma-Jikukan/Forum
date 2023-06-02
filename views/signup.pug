@@ -7,11 +7,11 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1')
         link(rel='stylesheet' href='/public/style.css')
     body
-           h1(class="title").border.center Welcome!
-           div(class="navbar")
-                a(href="/") Back to main page 
-                a(href="login") login 
-           div(class="user") 
+            h1(class="title").border.center Welcome!
+            div(class="navbar")
+                 a(href="/") Back to main page 
+                 a(href="login") login 
+            div(class="user") 
                 div(class="signup")    
                     h2 Sign Up
                     form(action='/signup' method='post')
@@ -22,4 +22,6 @@ html
                            label Password: 
                            input(type='password' name='password')
                        div
-                       input(type='submit' value='Sign Up')   
+                       input(type='submit' value='Sign Up')
+            if failed 
+                h2 #{failed}   

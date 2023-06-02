@@ -48,13 +48,13 @@ router.post("/", async (req, res) => {
         // check to see if user already exists.
         const signupUser = await User.findOne({ username: req.body.username })
         if (signupUser) {
-            res.redirect('/');
+            res.render('signup', {failed: "Username or password not valid"});
             return;
         }
         // check to see if password is at least medium.
         const passRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
         if (!passRegex.test(req.body.password)) {
-            res.redirect('/');
+            res.render('signup', {failed: "Username or password not valid"});
             return;
         }
         // hashing the password and creating a new user in the database.
@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
             username: req.body.username,
             password: hashedPass,
         });
-        res.redirect('/');
+        res.render('login', {massege:"user created, please log in."});
     } catch (err) {
         res.render('error', { "error message": err })
     }

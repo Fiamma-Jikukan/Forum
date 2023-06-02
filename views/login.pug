@@ -14,6 +14,8 @@ html
            div(class="user")
                 div(class="login")
                     h2 log in
+                    if massege
+                        h2 #{massege}
                     h3 Please log in
                     form(action='/login' method='post')
                        div

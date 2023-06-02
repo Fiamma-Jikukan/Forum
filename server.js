@@ -30,6 +30,28 @@ app.use('/post', post);
 app.use('/login', login);
 app.use('/signup', signup);
 
+app.use(async (req, res, next) => {
+    if (!req.cookies.session) {
+        next()
+        return;
+    }
+    const currentSession = await Session.findById(req.cookies.session);
+    if (!currentSession) {
+        res.clearCookie('session');
+        next()
+        return;
+    }
+    const currentUser = await User.findById(currentSession.user);
+    if (!currentUser) {
+        res.clearCookie('session');
+        next()
+        return
+    }
+    req.cookies.authenticated = true
+    console.log(req.cookies);
+    next()
+})
+
 
 // get requests
 app.get("/", async (req, res) => {
@@ -62,19 +84,19 @@ app.get("/", async (req, res) => {
         }
         res.render('forum', { user: currentUser, posts: posts });
     } catch (err) {
-        res.redirect('/')
+        res.redirect('/error')
     }
-    res.render("forum")
 })
 
 app.get("/profile/:id", async (req, res) => {
     try {
         const pageUser = await User.findById(req.params.id);
-        if(!req.cookies.session) {
+        if (!req.cookies.session) {
             res.render('profile', { user: pageUser })
             return
         }
         const currentSession = await Session.findById(req.cookies.session);
+        
         const currentUser = await User.findById(currentSession.user);
         if (req.params.id !== currentUser.id) {
             if (!currentUser.admin) {

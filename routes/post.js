@@ -17,6 +17,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     try {
+        console.log(req.cookies);
         if (!req.cookies.session) {
             res.redirect('/');
             return;
