@@ -68,7 +68,7 @@ app.get("/", async (req, res) => {
             res.render('forum', { posts: posts });
             return;
         }
-        res.render('forum', { user: req.user, posts: posts, admin: req.user.admin });
+        res.render('forum', { user: req.user, posts: posts, admin: req.user?.admin });
     } catch (err) {
         res.redirect('/error')
     }

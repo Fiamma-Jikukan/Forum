@@ -59,7 +59,7 @@ router.get("/:id", async (req, res) => {
             user: maker,
             replies: repliesOfThisPost,
             authenticated: req.user,
-            admin: req.user.admin
+            admin: req.user?.admin
         })
     } catch (err) {
         res.render('error', { "error-message": err })
