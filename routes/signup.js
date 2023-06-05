@@ -1,16 +1,10 @@
 const express = require("express")
-const bodyParser = require("body-parser")
 const bcrypt = require('bcrypt');
-const cookieParser = require("cookie-parser")
 
-const { Schema,
-    userSchema,
-    User,
-    connect,
-    sessionSchema,
+const { User,
     Session,
-    postSchema,
-    Post } = require("../database.js");
+    Post,
+    Reply } = require("../database.js");
 
 const router = express.Router();
 

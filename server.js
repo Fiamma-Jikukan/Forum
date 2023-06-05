@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser")
 const ObjectId = require('mongoose').Types.ObjectId;
 const {
     User,
-    sessionSchema,
     Session,
     Post } = require("./database.js");
 

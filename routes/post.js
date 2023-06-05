@@ -1,15 +1,8 @@
 const express = require("express")
-const cookieParser = require("cookie-parser")
-const bodyParser = require("body-parser")
 const ObjectId = require('mongoose').Types.ObjectId;
-const { Schema,
-    userSchema,
-    User,
-    sessionSchema,
+const { User,
     Session,
-    postSchema,
     Post,
-    replySchema,
     Reply } = require("../database.js");
 
 const router = express.Router();
@@ -46,14 +39,6 @@ router.get("/:id", async (req, res) => {
                 time: item.created
             }
         })
-        // if (!req.user) {
-        //     res.render("post", {
-        //         post: currentPost,
-        //         user: maker,
-        //         replies: repliesOfThisPost
-        //     })
-        //     return;
-        // }
         res.render("post", {
             post: currentPost,
             user: maker,
