@@ -15,7 +15,7 @@ html
             h2 #{post.title}
             p #{post.text} 
             div(class="info")
-                a(href=`/profile/${user.id}`) this post was created by user #{user.username} at #{post.created}
+                a(href=`/profile/${post.user.name}`) this post was created by user #{post.user.name} at #{post.created}
         if authenticated
             form(action=`${post.id}/reply` method='post')
                 div 
@@ -26,6 +26,6 @@ html
             div(class="reply")
                 p= val.reply
                 div(class="info")
-                    a(href=`/profile/${val.user.id}`) this reply was made by user #{val.user.name} at #{val.time}
+                    a(href=`/profile/${val.user.name}`) this reply was made by user #{val.user.name} at #{val.time}
       
         

@@ -44,6 +44,10 @@ body {
     margin: 2em;
 }
 
+.threads {
+    margin-bottom: 10em;
+}
+
 .thread:hover{
     border-style: solid;
 

@@ -9,13 +9,26 @@ html
     body
         div(class="login")
             h1(class="title").border.center #{user.username}!
-            if session || admin
+            if session
                 h3 You are logged in! 
                 form(action='/logout' method='post')
                     input(type='submit' value='Log Out')
-                form(action='/remove' method='post')
+                form(action=`/remove/${user.id}` method='post')
                     input(type='submit' value='Delete User')
-            a(href="/") Back to main page 
             if admin  
-                p as an admin
+                h3 You are logged in as an admin! 
+                form(action=`/remove/${user.id}` method='post')
+                    input(type='submit' value='Delete this User')
+        a(href="/") Back to main page 
+        div(class="threads")
+            if posts 
+                h2 Here are all the threads this user created:
+                each val in posts 
+                    div(class="thread")
+                        a(href=`/post/${val.id}`) 
+                            h3= val.title
+                            p(class="info")= `this post was created by user ${val.user.name} at ${val.time}`
+              
+            else         
+                h2 This user did not create any threads...
               
