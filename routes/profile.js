@@ -22,11 +22,7 @@ router.get("/:name", async (req, res) => {
             return;
         }
         const allPostOfUserQ = await Post.find({
-            user:
-            {
-                id: pageUser.id,
-                name: pageUser.username
-            }
+            'user.id': pageUser.id,
         })
         const allPostOfUser = allPostOfUserQ.map((item) => {
             return {
