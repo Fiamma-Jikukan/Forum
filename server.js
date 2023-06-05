@@ -45,13 +45,7 @@ app.use(async (req, res, next) => {
         next()
         return;
     }
-    if (!currentUser.admin) {
-        req.session = currentSession;
-        next()
-        return;
-    }
     req.session = currentSession
-    req.session.admin = true;
     next()
 })
 
@@ -77,7 +71,7 @@ app.get("/", async (req, res) => {
             return;
         }
         const currentUser = await User.findById(req.session.user);
-        res.render('forum', { user: currentUser, posts: posts, admin: req.session.admin });
+        res.render('forum', { user: currentUser, posts: posts, admin: currentUser.admin });
     } catch (err) {
         res.redirect('/error')
     }
@@ -108,7 +102,7 @@ app.post("/remove/:id", async (req, res) => {
             return;
         }
         const currentUser = await User.findById(req.session.user);
-        if (req.params.id !== req.session.user && !req.session.admin ) {
+        if (req.params.id !== req.session.user && !currentUser.admin ) {
             res.redirect('/');
             return;
         }

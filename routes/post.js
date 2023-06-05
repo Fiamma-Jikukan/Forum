@@ -58,12 +58,13 @@ router.get("/:id", async (req, res) => {
             })
             return;
         }
+        const currentUser = await User.findById(req.session.user);
         res.render("post", {
             post: currentPost,
             user: maker,
             replys: replysOfThisPost,
             authenticated: true,
-            admin: req.session.admin
+            admin: currentUser.admin
         })
     } catch (err) {
         res.redirect('/error')
