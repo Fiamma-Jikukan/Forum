@@ -42,8 +42,8 @@ router.get("/:id", async (req, res) => {
             return;
         }
         const maker = await User.findById(currentPost.user.id);
-        const replysOfThisPostQ = await Reply.find({ post: req.params.id })
-        const replysOfThisPost = replysOfThisPostQ.map(item => {
+        const repliesOfThisPostQ = await Reply.find({ post: req.params.id })
+        const repliesOfThisPost = repliesOfThisPostQ.map(item => {
             return {
                 reply: item.reply,
                 user: { name: item.user.name, id: item.user.id },
@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
             res.render("post", {
                 post: currentPost,
                 user: maker,
-                replys: replysOfThisPost
+                replies: repliesOfThisPost
             })
             return;
         }
@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
         res.render("post", {
             post: currentPost,
             user: maker,
-            replys: replysOfThisPost,
+            replies: repliesOfThisPost,
             authenticated: true,
             admin: currentUser.admin
         })
