@@ -1,17 +1,13 @@
-const http = require("http");
 const express = require("express")
-const session = require("express-session")
 const bodyParser = require("body-parser")
-require('dotenv').config()
 const cookieParser = require("cookie-parser")
 const ObjectId = require('mongoose').Types.ObjectId;
-const { Schema,
-    userSchema,
+const {
     User,
-    connect,
     sessionSchema,
     Session,
     Post } = require("./database.js");
+
 const post = require("./routes/post.js");
 const login = require("./routes/login.js");
 const signup = require("./routes/signup.js");
@@ -46,6 +42,8 @@ app.use(async (req, res, next) => {
         return;
     }
     req.session = currentSession
+    req.user = currentUser
+    console.log(req.user);
     next()
 })
 
@@ -66,12 +64,11 @@ app.get("/", async (req, res) => {
                 user: item.user.name
             }
         }).reverse()
-        if (!req.session) {
+        if (!req.user) {
             res.render('forum', { posts: posts });
             return;
         }
-        const currentUser = await User.findById(req.session.user);
-        res.render('forum', { user: currentUser, posts: posts, admin: currentUser.admin });
+        res.render('forum', { user: req.user, posts: posts, admin: req.user.admin });
     } catch (err) {
         res.redirect('/error')
     }
@@ -85,7 +82,7 @@ app.get("/error", async (req, res) => {
 app.post("/logout", async (req, res) => {
     try {
         // delete the session from DB when user logs out.
-        const deleteSession = await Session.findByIdAndDelete(req.cookies.session)
+        const deleteSession = await Session.findByIdAndDelete(req.session.id)
         // clear the cookie.
         res.clearCookie('session');
         res.redirect('/');
@@ -97,12 +94,11 @@ app.post("/logout", async (req, res) => {
 
 app.post("/remove/:id", async (req, res) => {
     try {
-        if (!req.session) {
+        if (!req.user) {
             res.redirect('/');
             return;
         }
-        const currentUser = await User.findById(req.session.user);
-        if (req.params.id !== req.session.user && !currentUser.admin ) {
+        if (req.params.id !== req.session.user && !req.user.admin ) {
             res.redirect('/');
             return;
         }

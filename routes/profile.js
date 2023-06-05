@@ -1,4 +1,3 @@
-const http = require("http");
 const express = require("express")
 const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
@@ -6,7 +5,6 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const { Schema,
     userSchema,
     User,
-    connect,
     sessionSchema,
     Session,
     postSchema,
@@ -18,19 +16,19 @@ const router = express.Router();
 
 router.get("/:name", async (req, res) => {
     try {
-        const pageUser = await User.find({ username: req.params.name });
-        if (!pageUser[0]) {
+        const pageUser = await User.findOne({ username: req.params.name });
+        if (!pageUser) {
             res.render('profile', { user: { username: "this user does not exist" } });
             return;
         }
         const allPostOfUserQ = await Post.find({
             user:
             {
-                id: pageUser[0].id,
-                name: pageUser[0].username
+                id: pageUser.id,
+                name: pageUser.username
             }
         })
-        const allPostOfUser = allPostOfUserQ.map((item) => { 
+        const allPostOfUser = allPostOfUserQ.map((item) => {
             return {
                 id: item.id,
                 user: item.user,
@@ -38,18 +36,17 @@ router.get("/:name", async (req, res) => {
                 time: item.created
             }
         })
-        if (!req.session) {
-            res.render('profile', { user: pageUser[0] , posts: allPostOfUser})
+        if (!req.user) {
+            res.render('profile', { user: pageUser, posts: allPostOfUser })
             return
         }
-        const currentUser = await User.findById(req.session.user);
-        if (req.params.name !== currentUser.username) {
-            res.render(`profile`, { user: pageUser[0],posts: allPostOfUser, admin: currentUser.admin })
+        if (req.params.name !== req.user.username) {
+            res.render(`profile`, { user: pageUser, posts: allPostOfUser, admin: req.user.admin })
             return;
         }
-        res.render(`profile`, { user: currentUser, posts: allPostOfUser, session: req.session, admin: currentUser.admin })
+        res.render(`profile`, { user: req.user, posts: allPostOfUser, session: req.session, admin: req.user.admin })
     } catch (err) {
-        res.redirect('/error')
+        res.render('error', { "error-message": err })
     }
 
 })

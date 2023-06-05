@@ -1,4 +1,3 @@
-const http = require("http");
 const express = require("express")
 const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
@@ -6,7 +5,6 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const { Schema,
     userSchema,
     User,
-    connect,
     sessionSchema,
     Session,
     postSchema,
@@ -18,13 +16,11 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     try {
-        if (!req.session) {
-            res.clearCookie('session');
+        if (!req.user) {
             res.redirect('/');
             return;
         }
-        const currentUser = await User.findById(req.session.user);
-        res.render("newPost", currentUser)
+        res.render("newPost", req.user)
     } catch (err) {
         res.render('error', { "error-message": err })
     }
@@ -50,37 +46,35 @@ router.get("/:id", async (req, res) => {
                 time: item.created
             }
         })
-        if (!req.session) {
-            res.render("post", {
-                post: currentPost,
-                user: maker,
-                replies: repliesOfThisPost
-            })
-            return;
-        }
-        const currentUser = await User.findById(req.session.user);
+        // if (!req.user) {
+        //     res.render("post", {
+        //         post: currentPost,
+        //         user: maker,
+        //         replies: repliesOfThisPost
+        //     })
+        //     return;
+        // }
         res.render("post", {
             post: currentPost,
             user: maker,
             replies: repliesOfThisPost,
-            authenticated: true,
-            admin: currentUser.admin
+            authenticated: req.user,
+            admin: req.user.admin
         })
     } catch (err) {
-        res.redirect('/error')
+        res.render('error', { "error-message": err })
     }
 
 })
 
 router.post("/", async (req, res) => {
     try {
-        if (!req.session) {
+        if (!req.user) {
             res.redirect('/')
             return;
         }
-        const currentUser = await User.findById(req.session.user);
         const newPost = await Post.create({
-            user: { id: currentUser.id, name: currentUser.username },
+            user: { id: req.user.id, name: req.user.username },
             title: req.body.title,
             text: req.body.post,
             created: new Date()
@@ -93,20 +87,18 @@ router.post("/", async (req, res) => {
 
 router.post("/:id/reply", async (req, res) => {
     try {
-        const currentPost = await Post.findById(req.params.id)
-        if (!req.session) {
-            res.clearCookie('session');
-            res.redirect(`/post/${currentPost.id}`);
+        if(!ObjectId.isValid(req.params.id)){
+            res.redirect('/');
             return;
         }
-        const currentUser = await User.findById(req.session.user);
-        if (!currentUser) {
+        const currentPost = await Post.findById(req.params.id)
+        if (!req.user) {
             res.redirect(`/post/${currentPost.id}`);
             return;
         }
         const newReply = await Reply.create({
             user: {
-                id: currentUser.id, name: currentUser.username
+                id: req.user.id, name: req.user.username
             },
             post: currentPost.id,
             reply: req.body.reply,

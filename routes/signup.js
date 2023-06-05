@@ -1,4 +1,3 @@
-const http = require("http");
 const express = require("express")
 const bodyParser = require("body-parser")
 const bcrypt = require('bcrypt');
@@ -18,13 +17,12 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         //check if there's a session. If not, render the loging main page.
-        if (!req.session) {
-            res.render('signup');
+        if (req.user) {
+            res.redirect(`/profile/${req.user.username}`);
             return;
         }
-        const currentUser = await User.findById(req.session.user);
         // If it got here, it means that the user is authenticated and ready to go to personal profile page.
-        res.redirect(`/profile/${currentUser.username}`);
+        res.render('signup');
     } catch (err) {
         res.render('error', { "error message": err })
     }
