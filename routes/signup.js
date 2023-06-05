@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
             res.render('signup');
             return;
         }
-        const currentUser = await User.findById(currentSession.user);
+        const currentUser = await User.findById(req.session.user);
         // If it got here, it means that the user is authenticated and ready to go to personal profile page.
         res.redirect(`/profile/${currentUser.username}`);
     } catch (err) {
